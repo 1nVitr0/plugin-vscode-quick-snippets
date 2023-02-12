@@ -8,7 +8,6 @@
     "type": "git",
     "url": "https://github.com/1nVitr0/plugin-vscode-quick-snippets.git"
   },
-  "icon": "resources/icon.png",
   "version": "0.1.2",
   "engines": {
     "vscode": "^1.72.0"
