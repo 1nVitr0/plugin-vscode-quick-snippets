@@ -1,6 +1,6 @@
 {
-  "name": "quick-snippets",
-  "displayName": "Quick Snippets",
+  "name": "snippet-clipboard",
+  "displayName": "Quick Snippets (Snippet Clipboard)",
   "description": "Copy and paste your clipboard as vscode snippets",
   "author": "1nVitr0",
   "publisher": "1nVitr0",
