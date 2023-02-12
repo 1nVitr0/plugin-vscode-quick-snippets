@@ -36,7 +36,9 @@
     "onCommand:quick-snippets.editSnippetClipboard",
     "onCommand:quick-snippets.editClipboardAsSnippet",
     "onCommand:quick-snippets.applySelectionTemplates",
-    "onCommand:quick-snippets.clearSnippetClipboard"
+    "onCommand:quick-snippets.applySelectionCounter",
+    "onCommand:quick-snippets.clearSnippetClipboard",
+    "onCommand:quick-snippets.resetClipboardIndex"
   ],
   "main": "./dist/extension.js",
   "contributes": {
@@ -48,7 +50,7 @@
       },
       {
         "command": "quick-snippets.copyEditToSnippet",
-        "title": "Edit and Copy as Snippet",
+        "title": "Copy and Edit as Snippet",
         "category": "Quick Snippet"
       },
       {
@@ -88,7 +90,7 @@
       },
       {
         "command": "quick-snippets.editClipboardAsSnippet",
-        "title": "Edit and Copy as Snippet",
+        "title": "Edit Clipboard as Snippet",
         "category": "Quick Snippet"
       },
       {
@@ -97,12 +99,148 @@
         "category": "Quick Snippet"
       },
       {
+        "command": "quick-snippets.applySelectionCounter",
+        "title": "Convert Selection to Counter",
+        "category": "Quick Snippet"
+      },
+      {
         "command": "quick-snippets.clearSnippetClipboard",
         "title": "Clear Snippet Clipboard",
         "category": "Quick Snippet"
+      },
+      {
+        "command": "quick-snippets.resetClipboardIndex",
+        "title": "Reset Clipboard Counter",
+        "category": "Quick Snippet"
       }
     ],
-    "configuration": []
+    "configuration": [
+      {
+        "title": "Quick Snippets",
+        "properties": {
+          "quick-snippets.queryForTemplates": {
+            "description": "Query for templates when creating snippets",
+            "default": true,
+            "type": "boolean"
+          },
+          "quick-snippets.queryTemplatesChecked": {
+            "description": "Check all templates by default when querying",
+            "default": false,
+            "type": "boolean"
+          },
+          "quick-snippets.alwaysEditTemplates": {
+            "description": "Always edit templates when creating snippets",
+            "default": false,
+            "type": "boolean"
+          },
+          "quick-snippets.keepPlaceholders": {
+            "description": "Keep original as placeholders when creating templates",
+            "default": true,
+            "type": "boolean"
+          },
+          "quick-snippets.appendToExistingTemplates": {
+            "description": "Append to existing templates when creating snippets",
+            "default": false,
+            "type": "boolean"
+          },
+          "quick-snippets.keepHistory": {
+            "description": "Number of snippets to keep in history",
+            "default": 10,
+            "type": "number"
+          },
+          "quick-snippets.reservedWords": {
+            "description": "Reserved words that do not create variable templates",
+            "default": [
+              "true",
+              "false",
+              "null",
+              "NULL",
+              "if",
+              "else",
+              "esleif",
+              "switch",
+              "case",
+              "while",
+              "for",
+              "foreach",
+              "in",
+              "of",
+              "var_dump",
+              "echo",
+              "cout",
+              "undefined",
+              "this",
+              "self",
+              "super",
+              "window",
+              "global",
+              "document",
+              "console",
+              "log",
+              "print",
+              "println",
+              "unset"
+            ],
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "quick-snippets.autoTemplate": {
+            "description": "Automatically convert to templates",
+            "type": "object",
+            "default": {
+              "integers": false,
+              "floats": false,
+              "htmlColors": true,
+              "repeatVars": 2,
+              "repeatStrings": 2
+            },
+            "properties": {
+              "integers": {
+                "description": "Convert integers to templates",
+                "default": false,
+                "type": "boolean"
+              },
+              "floats": {
+                "description": "Convert floats to templates",
+                "default": false,
+                "type": "boolean"
+              },
+              "htmlColors": {
+                "description": "Convert HTML colors to templates",
+                "default": true,
+                "type": "boolean"
+              },
+              "repeatVars": {
+                "description": "Convert repeated variables to templates (minimum occurrence, true is equivalent to 2)",
+                "default": 2,
+                "oneOf": [
+                  {
+                    "type": "boolean"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ]
+              },
+              "repeatStrings": {
+                "description": "Convert repeated strings to templates (minimum occurrence, true is equivalent to 2)",
+                "default": 2,
+                "oneOf": [
+                  {
+                    "type": "boolean"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ]
+              }
+            }
+          }
+        }
+      }
+    ]
   },
   "scripts": {
     "vscode:prepublish": "npm run package",
@@ -116,27 +254,27 @@
     "test": "node ./out/test/runTest.js"
   },
   "devDependencies": {
-    "@semantic-release/changelog": "^6.0.1",
+    "@semantic-release/changelog": "^6.0.2",
     "@semantic-release/git": "^10.0.1",
-    "@types/glob": "^7.2.0",
-    "@types/mocha": "^9.1.1",
-    "@types/node": "^17.0.31",
+    "@types/glob": "^8.0.1",
+    "@types/mocha": "^10.0.1",
+    "@types/node": "^18.13.0",
     "@types/vscode": "1.72",
-    "@typescript-eslint/eslint-plugin": "^5.22.0",
-    "@typescript-eslint/parser": "^5.22.0",
-    "eslint": "^8.14.0",
-    "eslint-config-prettier": "^8.5.0",
-    "glob": "^8.0.1",
-    "mocha": "^10.0.0",
-    "semantic-release": "^19.0.3",
-    "semantic-release-vsce": "^5.0.11",
-    "ts-loader": "^9.3.0",
-    "typescript": "^4.6.4",
+    "@typescript-eslint/eslint-plugin": "^5.51.0",
+    "@typescript-eslint/parser": "^5.51.0",
+    "eslint": "^8.34.0",
+    "eslint-config-prettier": "^8.6.0",
+    "glob": "^8.1.0",
+    "mocha": "^10.2.0",
+    "semantic-release": "^20.1.0",
+    "semantic-release-vsce": "^5.5.6",
+    "ts-loader": "^9.4.2",
+    "typescript": "^4.9.5",
     "vscode-test": "^1.6.1",
-    "webpack": "^5.72.0",
-    "webpack-cli": "^4.9.2"
+    "webpack": "^5.75.0",
+    "webpack-cli": "^5.0.1"
   },
   "dependencies": {
-    "node-fetch": "^3.2.10"
+    "node-fetch": "^3.3.0"
   }
 }

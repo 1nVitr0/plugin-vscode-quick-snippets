@@ -1,34 +1,39 @@
-import { env, QuickPickItem, QuickPickItemKind, SnippetString, SnippetTextEdit, TextEditor, window, workspace, WorkspaceEdit } from 'vscode';
+import { Disposable, env, QuickPickItem, QuickPickItemKind, SnippetString, SnippetTextEdit, TextEditor, window, workspace, WorkspaceEdit } from 'vscode';
+import { ExtensionConfiguration } from '../providers/ConfigurationProvider';
+import { SnippetServiceProvider } from '../providers/SnippetServiceProvider';
 
-export interface SnippetOptions {
-  separateTemplates?: boolean;
-  queryForTemplates?: boolean;
-  keepPlaceholders?: boolean;
-  queryTemplatesDefaultChecked?: boolean;
-  templateIntegers?: boolean;
-  templateFloats?: boolean;
-  templateHtmlColors?: boolean;
-  templateRepeatVars?: boolean | number;
-  templateRepeatStrings?: boolean | number;
-}
+export class DynamicSnippetService implements Disposable {
+  public constructor(private services: SnippetServiceProvider, private config: ExtensionConfiguration) { }
 
-export class DynamicSnippetService {
-  public async provideSelectionSnippet (editor: TextEditor, options?: SnippetOptions): Promise<SnippetString[]> {
-    let templateOffset = 1;
-    return await Promise.all(editor.selections.map(async (selection) => {
-      const text = editor.document.getText(selection);
-      const templates = await this.getTemplates(text, options);
-      const snippet = new SnippetString(this.replaceTemplates(text, templates, templateOffset, options?.keepPlaceholders));
-
-      if (options?.separateTemplates) templateOffset += templates.length;
-      return snippet;
-    }));
+  public dispose () {
+    // Placeholder for future use
   }
 
-  public async provideClipboardSnippet (options?: SnippetOptions): Promise<SnippetString[]> {
+  public async provideSelectionSnippet (editor: TextEditor): Promise<SnippetString[]> {
+    const snippets = [];
+
+    let templateOffset = 1;
+    for (const selection of editor.selections) {
+      const text = editor.document.getText(selection);
+      const templates = await this.getTemplates(text);
+      const snippet = new SnippetString(this.replaceTemplates(text, templates, templateOffset));
+
+      templateOffset += templates.length;
+      snippets.push(snippet);
+    }
+
+    return snippets;
+  }
+
+  public async provideClipboardSnippet (): Promise<SnippetString[]> {
     const text = await env.clipboard.readText();
-    const templates = await this.getTemplates(text, options);
-    return [new SnippetString(this.replaceTemplates(text, templates, 0, options?.keepPlaceholders))];
+    const templates = await this.getTemplates(text);
+    return [new SnippetString(this.replaceTemplates(text, templates, 0))];
+  }
+
+  public async provideSnippetClipboardSnippet (index = 0): Promise<SnippetString[] | undefined> {
+    const snippets = await this.services.clipboard.pasteIndex(index);
+    return snippets && this.replaceIndex(snippets, this.services.clipboard.pasteCount);
   }
 
   public provideSnippetEdit (editor: TextEditor, snippets: SnippetString[]): WorkspaceEdit {
@@ -37,10 +42,10 @@ export class DynamicSnippetService {
 
     if (selections.length !== snippets.length && snippets.length > 1) {
       throw new Error("Selections and snippets must be the same length");
-    } else if (selections.length > 1 && snippets.length == 1) {
+    } else if (selections.length > 1 && snippets.length === 1) {
       // Multi cursor, single snippet
       const lines = snippets[0].value.split("\n").map((snippet) => new SnippetString(snippet));
-      if (lines.length == selections.length) snippets = lines;
+      if (lines.length === selections.length) snippets = lines;
     } else if (snippets.length === 0) {
       return edit;
     }
@@ -56,16 +61,31 @@ export class DynamicSnippetService {
     return edit;
   }
 
-  private replaceTemplates (text: string, templates: string[], start?: number, keepPlaceholder?: boolean): string;
+  private replaceIndex (snippets: SnippetString[], index: number = 0) {
+    const regex = /\$\{(n\s*([+\-]\s*\d+)?|(\s*\d+)?\s*-n)\}/;
+    function replace (j: number, _: string, n?: string, offset?: string, negativeOffset?: string) {
+      if (n === "-n") return `${-(index + j)}`;
+      else if (negativeOffset) return `${parseInt(negativeOffset) - (index + j)}`;
+      else return `${index + j + parseInt(offset ?? '0')}`;
+    }
+
+    return snippets.map(({ value }, j) => {
+      const text = value.replace(regex, replace.bind(null, j));
+      return new SnippetString(text);
+    });
+  }
+
+  private replaceTemplates (text: string, templates: string[], startIndex?: number, keepPlaceholder?: boolean): string;
   private replaceTemplates (text: string, templates: string[], replaceWith?: string): string;
-  private replaceTemplates (text: string, templates: string[], replaceWithOrStart: string | number = 0, keepPlaceholder = true): string {
+  private replaceTemplates (text: string, templates: string[], replaceWithOrStart: string | number = 0): string {
+    const { keepPlaceholders } = this.config;
     const replaceWith = typeof replaceWithOrStart === "string" ? replaceWithOrStart : null;
 
     let newText = text;
     let i = typeof replaceWithOrStart === "number" ? replaceWithOrStart : 1;
     for (const template of templates) {
-      const regex = new RegExp(`(?<=\\W|^)${template}(?=\\W|$)`);
-      const replace = replaceWith ?? (keepPlaceholder
+      const regex = new RegExp(`(?<=\\W|^)${template}(?=\\W|$)`, 'g');
+      const replace = replaceWith ?? (keepPlaceholders
         ? `\${${i++}:${template}}`
         : template);
       newText = newText.replace(regex, replace);
@@ -74,22 +94,24 @@ export class DynamicSnippetService {
     return newText;
   }
 
-  private async getTemplates (text: string, options?: SnippetOptions): Promise<string[]> {
+  private async getTemplates (text: string): Promise<string[]> {
+    const { autoTemplate, queryForTemplates, queryTemplatesChecked, reservedWords } = this.config;
+
     const templates: string[] = [];
-    if (options?.templateIntegers) {
+    if (autoTemplate.integers) {
       const matches = text.match(/(?<=\W|^)\d+(?=\W|$)/g);
       if (matches) templates.push(...matches);
     }
-    if (options?.templateFloats) {
+    if (autoTemplate.floats) {
       const matches = text.match(/(?<=\W|^)\d+\.\d+(?=\W|$)/g);
       if (matches) templates.push(...matches);
     }
-    if (options?.templateHtmlColors) {
+    if (autoTemplate.htmlColors) {
       const matches = text.match(/(?<=\W|^)#(?:[A-Fa-f0-9]{3}|[A-Fa-f0-9]{6})(?=\W|$)/g);
       if (matches) templates.push(...matches);
     }
-    if (options?.templateRepeatStrings) {
-      const minRepeat = typeof options.templateRepeatStrings === "number" ? options.templateRepeatStrings : 2;
+    if (autoTemplate.repeatStrings) {
+      const minRepeat = typeof autoTemplate.repeatStrings === "number" ? autoTemplate.repeatStrings : 2;
       const strings = text.match(/"((?<=\\)"|[^"])+"|'((?<=\\)'|[^'])+'|`((?<=\\)`|[^`])+`/g) ?? [];
       const repeatStrings = this.filterRepeats(strings, minRepeat);
       templates.push(...repeatStrings);
@@ -97,24 +119,23 @@ export class DynamicSnippetService {
 
     const cleanedText = this.replaceTemplates(text, templates, "");
 
-    if (options?.templateRepeatVars) {
-      const minRepeat = typeof options.templateRepeatVars === "number" ? options.templateRepeatVars : 2;
+    if (autoTemplate.repeatVars) {
+      const minRepeat = typeof autoTemplate.repeatVars === "number" ? autoTemplate.repeatVars : 2;
       const vars = cleanedText.match(/(?<=\W|^)\w+(?=\W|$)/g) ?? [];
-      const reserved: string[] = workspace.getConfiguration("quick-snippets").reservedWords;
+      const reserved: string[] = reservedWords;
       const repeatVars = this.filterRepeats(vars, minRepeat, reserved);
       templates.push(...repeatVars);
     }
 
-    if (options?.queryForTemplates) {
+    if (queryForTemplates) {
       const items: QuickPickItem[] = templates.map((template) => ({
         label: template,
-        picked: options?.queryTemplatesDefaultChecked,
+        picked: queryTemplatesChecked,
         kind: QuickPickItemKind.Default
       }));
       const picked = await window.showQuickPick(items, {
         title: "Select templates to use",
         canPickMany: true,
-
       });
 
       if (picked) templates.splice(0, templates.length, ...picked.map((item) => item.label));
@@ -130,7 +151,7 @@ export class DynamicSnippetService {
     }, {});
 
     return Object.entries(counts)
-      .filter(([str, count]) => count > minRepeat && !ignore?.includes(str))
+      .filter(([str, count]) => count >= minRepeat && !ignore?.includes(str))
       .map(([str]) => str);
   }
 }

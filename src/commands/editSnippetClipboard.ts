@@ -1,25 +1,25 @@
 import { SnippetServiceProvider } from '../providers/SnippetServiceProvider';
 
-async function editSnippetClipboardAtIndex (index: number, serviceProvider: SnippetServiceProvider) {
-  const activeClipboard = await serviceProvider.clipboard.pasteIndex(index);
+async function editSnippetClipboardAtIndex (index: number, services: SnippetServiceProvider) {
+  const activeClipboard = await services.clipboard.pasteIndex(index);
   if (!activeClipboard) return;
 
   const edits = await Promise.all(activeClipboard.map(async (snippet) => {
-    return await serviceProvider.editor.provideEditorEditedSnippet(snippet);
+    return await services.editor.provideEditorEditedSnippet(snippet);
   }));
 
-  serviceProvider.clipboard.copyIndex(edits, index);
+  services.clipboard.copyIndex(edits, index);
 }
 
 export const editSnippetClipboard = editSnippetClipboardAtIndex.bind(null, 0);
 
-export async function editClipboardAsSnippet (serviceProvider: SnippetServiceProvider) {
-  const clipboardSnippet = await serviceProvider.dynamicSnippet.provideClipboardSnippet();
-  await serviceProvider.clipboard.copy(clipboardSnippet);
+export async function editClipboardAsSnippet (services: SnippetServiceProvider) {
+  const clipboardSnippet = await services.dynamicSnippet.provideClipboardSnippet();
+  await services.clipboard.copy(clipboardSnippet);
 
-  await editSnippetClipboard(serviceProvider);
+  await editSnippetClipboard(services);
 }
 
-export function clearSnippetClipboard (serviceProvider: SnippetServiceProvider) {
-  serviceProvider.clipboard.clear();
+export function clearSnippetClipboard (services: SnippetServiceProvider) {
+  services.clipboard.clear();
 }
