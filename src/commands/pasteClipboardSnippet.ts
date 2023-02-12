@@ -2,16 +2,19 @@ import { QuickPickItem, QuickPickItemKind, TextEditor, window, workspace } from 
 import { SnippetServiceProvider } from "../providers/SnippetServiceProvider";
 import { editSnippetClipboard } from "./editSnippetClipboard";
 
-async function pasteIndexClipboardSnippet (index: number, serviceProvider: SnippetServiceProvider, editor: TextEditor) {
-  const clipboardSnippet = await serviceProvider.clipboard.pasteIndex(index)
+async function pasteIndexClipboardSnippet (index: number, services: SnippetServiceProvider, editor: TextEditor) {
+  const clipboardSnippet = await services.dynamicSnippet.provideSnippetClipboardSnippet(index);
   if (!clipboardSnippet) return;
 
-  const edit = serviceProvider.dynamicSnippet.provideSnippetEdit(editor, clipboardSnippet);
-  if (edit) await workspace.applyEdit(edit);
+  const edit = services.dynamicSnippet.provideSnippetEdit(editor, clipboardSnippet);
+  if (edit) {
+    await workspace.applyEdit(edit);
+    services.clipboard.incrementPasteCount();
+  }
 }
 
-export async function pasteSelectClipboardSnippet (serviceProvider: SnippetServiceProvider, editor: TextEditor) {
-  const history = serviceProvider.clipboard.provideSnippetHistory();
+export async function pasteSelectClipboardSnippet (services: SnippetServiceProvider, editor: TextEditor) {
+  const history = services.clipboard.provideSnippetHistory();
   const items: QuickPickItem[] = history.map((snippets, index) => ({
     kind: QuickPickItemKind.Default,
     label: snippets[0]?.value.slice(0, 20) || 'Empty',
@@ -22,17 +25,17 @@ export async function pasteSelectClipboardSnippet (serviceProvider: SnippetServi
 
   const selected = (await window.showQuickPick(items, { placeHolder: 'Select a snippet to paste' })) as QuickPickItem & { index: number } | undefined;
 
-  if (selected) await pasteIndexClipboardSnippet(selected.index, serviceProvider, editor);
+  if (selected) await pasteIndexClipboardSnippet(selected.index, services, editor);
 }
 
 export const pasteClipboardSnippet = pasteIndexClipboardSnippet.bind(null, 0);
 
-export async function pasteEditedSnippet (serviceProvider: SnippetServiceProvider, editor: TextEditor) {
-  await editSnippetClipboard(serviceProvider);
-  await pasteClipboardSnippet(serviceProvider, editor);
+export async function pasteEditedSnippet (services: SnippetServiceProvider, editor: TextEditor) {
+  await editSnippetClipboard(services);
+  await pasteClipboardSnippet(services, editor);
 }
 
-export async function pasteSelectEditedSnippet (serviceProvider: SnippetServiceProvider, editor: TextEditor) {
-  await editSnippetClipboard(serviceProvider);
-  await pasteSelectClipboardSnippet(serviceProvider, editor);
+export async function pasteSelectEditedSnippet (services: SnippetServiceProvider, editor: TextEditor) {
+  await editSnippetClipboard(services);
+  await pasteSelectClipboardSnippet(services, editor);
 }

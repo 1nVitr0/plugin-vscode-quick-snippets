@@ -3,14 +3,14 @@ import { SnippetServiceProvider } from '../providers/SnippetServiceProvider';
 import { editClipboardAsSnippet } from './editSnippetClipboard';
 import { pasteClipboardSnippet } from './pasteClipboardSnippet';
 
-export async function pasteAsSnippet (serviceProvider: SnippetServiceProvider, editor: TextEditor) {
-  const clipboardSnippet = await serviceProvider.dynamicSnippet.provideClipboardSnippet();
-  serviceProvider.clipboard.copy(clipboardSnippet);
+export async function pasteAsSnippet (services: SnippetServiceProvider, editor: TextEditor) {
+  const clipboardSnippet = await services.dynamicSnippet.provideClipboardSnippet();
+  services.clipboard.copy(clipboardSnippet);
 
-  await pasteClipboardSnippet(serviceProvider, editor);
+  await pasteClipboardSnippet(services, editor);
 }
 
-export async function pasteEditAsSnippet (serviceProvider: SnippetServiceProvider, editor: TextEditor) {
-  await editClipboardAsSnippet(serviceProvider);
-  await pasteClipboardSnippet(serviceProvider, editor);
+export async function pasteEditAsSnippet (services: SnippetServiceProvider, editor: TextEditor) {
+  await editClipboardAsSnippet(services);
+  await pasteClipboardSnippet(services, editor);
 }
