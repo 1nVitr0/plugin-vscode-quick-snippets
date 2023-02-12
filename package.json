@@ -6,7 +6,7 @@
   "publisher": "1nVitr0",
   "repository": {
     "type": "git",
-    "url": "https://github.com/1nVitr0/plugin-vscode-quick-snipet.git"
+    "url": "https://github.com/1nVitr0/plugin-vscode-quick-snippets.git"
   },
   "icon": "resources/icon.png",
   "version": "0.1.2",
