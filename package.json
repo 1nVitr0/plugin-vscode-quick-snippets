@@ -255,6 +255,83 @@
           }
         }
       }
+    ],
+    "keybindings": [
+      {
+        "command": "snippet-clipboard.copyToSnippet",
+        "key": "ctrl+meta+c c",
+        "when": "editorTextFocus & editorHasSelection & !editorReadonly"
+      },
+      {
+        "command": "snippet-clipboard.copyEditToSnippet",
+        "key": "ctrl+meta+c alt+c",
+        "when": "editorTextFocus & editorHasSelection & !editorReadonly"
+      },
+      {
+        "command": "snippet-clipboard.pasteClipboardSnippet",
+        "key": "ctrl+meta+c v",
+        "when": "editorTextFocus & !editorReadonly"
+      },
+      {
+        "command": "snippet-clipboard.pasteEditedSnippet",
+        "key": "ctrl+meta+c alt+v",
+        "when": "editorTextFocus & !editorReadonly"
+      },
+      {
+        "command": "snippet-clipboard.pasteAsSnippet",
+        "key": "ctrl+meta+c shift+v",
+        "when": "editorTextFocus & !editorReadonly"
+      },
+      {
+        "command": "snippet-clipboard.pasteEditAsSnippet",
+        "key": "ctrl+meta+c alt+shift+v",
+        "when": "editorTextFocus & !editorReadonly"
+      },
+      {
+        "command": "snippet-clipboard.pasteSelectClipboardSnippet",
+        "key": "ctrl+meta+c alt+shift+v",
+        "when": "editorTextFocus & !editorReadonly"
+      },
+      {
+        "command": "snippet-clipboard.pasteSelectEditedSnippet",
+        "key": "ctrl+meta+c ctrl+alt+shift+v",
+        "when": "editorTextFocus & !editorReadonly"
+      },
+      {
+        "command": "snippet-clipboard.editSnippetClipboard",
+        "key": "ctrl+meta+c e",
+        "when": "editorTextFocus"
+      },
+      {
+        "command": "snippet-clipboard.editSelectSnippetClipboard",
+        "key": "ctrl+meta+c ctrl+e",
+        "when": "editorTextFocus"
+      },
+      {
+        "command": "snippet-clipboard.editClipboardAsSnippet",
+        "key": "ctrl+meta+c shift+e",
+        "when": "editorTextFocus"
+      },
+      {
+        "command": "snippet-clipboard.applySelectionTemplates",
+        "key": "ctrl+meta+c t",
+        "when": "editorTextFocus & editorHasSelection"
+      },
+      {
+        "command": "snippet-clipboard.applySelectionCounter",
+        "key": "ctrl+meta+c shift+t",
+        "when": "editorTextFocus & editorHasSelection"
+      },
+      {
+        "command": "snippet-clipboard.clearSnippetClipboard",
+        "key": "ctrl+meta+c shift+r",
+        "when": "editorTextFocus"
+      },
+      {
+        "command": "snippet-clipboard.resetClipboardIndex",
+        "key": "ctrl+meta+c r",
+        "when": "editorTextFocus"
+      }
     ]
   },
   "scripts": {
