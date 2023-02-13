@@ -1,6 +1,6 @@
 {
   "name": "snippet-clipboard",
-  "displayName": "Quick Snippets (Snippet Clipboard)",
+  "displayName": "Snippet Clipboard (Snippet Clipboard)",
   "description": "Copy and paste your clipboard as vscode snippets",
   "author": "1nVitr0",
   "publisher": "1nVitr0",
@@ -24,130 +24,146 @@
     "sampling"
   ],
   "activationEvents": [
-    "onCommand:quick-snippets.copyToSnippet",
-    "onCommand:quick-snippets.copyEditToSnippet",
-    "onCommand:quick-snippets.pasteAsSnippet",
-    "onCommand:quick-snippets.pasteEditAsSnippet",
-    "onCommand:quick-snippets.pasteClipboardSnippet",
-    "onCommand:quick-snippets.pasteEditedSnippet",
-    "onCommand:quick-snippets.pasteSelectClipboardSnippet",
-    "onCommand:quick-snippets.pasteSelectEditedSnippet",
-    "onCommand:quick-snippets.editSnippetClipboard",
-    "onCommand:quick-snippets.editClipboardAsSnippet",
-    "onCommand:quick-snippets.applySelectionTemplates",
-    "onCommand:quick-snippets.applySelectionCounter",
-    "onCommand:quick-snippets.clearSnippetClipboard",
-    "onCommand:quick-snippets.resetClipboardIndex"
+    "onCommand:snippet-clipboard.copyToSnippet",
+    "onCommand:snippet-clipboard.copyEditToSnippet",
+    "onCommand:snippet-clipboard.pasteAsSnippet",
+    "onCommand:snippet-clipboard.pasteEditAsSnippet",
+    "onCommand:snippet-clipboard.pasteClipboardSnippet",
+    "onCommand:snippet-clipboard.pasteEditedSnippet",
+    "onCommand:snippet-clipboard.pasteSelectClipboardSnippet",
+    "onCommand:snippet-clipboard.pasteSelectEditedSnippet",
+    "onCommand:snippet-clipboard.editSnippetClipboard",
+    "onCommand:snippet-clipboard.",
+    "onCommand:snippet-clipboard.editClipboardAsSnippet",
+    "onCommand:snippet-clipboard.applySelectionTemplates",
+    "onCommand:snippet-clipboard.applySelectionCounter",
+    "onCommand:snippet-clipboard.clearSnippetClipboard",
+    "onCommand:snippet-clipboard.resetClipboardIndex"
   ],
   "main": "./dist/extension.js",
   "contributes": {
     "commands": [
       {
-        "command": "quick-snippets.copyToSnippet",
+        "command": "snippet-clipboard.copyToSnippet",
         "title": "Copy as snippet",
-        "category": "Quick Snippet"
+        "category": "Snippet Clipboard",
+        "enablement": "editorTextFocus & editorHasSelection"
       },
       {
-        "command": "quick-snippets.copyEditToSnippet",
+        "command": "snippet-clipboard.copyEditToSnippet",
         "title": "Copy and Edit as Snippet",
-        "category": "Quick Snippet"
+        "category": "Snippet Clipboard",
+        "enablement": "editorTextFocus & editorHasSelection"
       },
       {
-        "command": "quick-snippets.pasteAsSnippet",
+        "command": "snippet-clipboard.pasteAsSnippet",
         "title": "Paste as Snippet",
-        "category": "Quick Snippet"
+        "category": "Snippet Clipboard",
+        "enablement": "editorTextFocus & !editorReadonly"
       },
       {
-        "command": "quick-snippets.pasteEditAsSnippet",
+        "command": "snippet-clipboard.pasteEditAsSnippet",
         "title": "Edit and Paste as Snippet",
-        "category": "Quick Snippet"
+        "category": "Snippet Clipboard",
+        "enablement": "editorTextFocus & !editorReadonly"
       },
       {
-        "command": "quick-snippets.pasteClipboardSnippet",
+        "command": "snippet-clipboard.pasteClipboardSnippet",
         "title": "Paste last Snippet",
-        "category": "Quick Snippet"
+        "category": "Snippet Clipboard",
+        "enablement": "editorTextFocus & !editorReadonly"
       },
       {
-        "command": "quick-snippets.pasteEditedSnippet",
+        "command": "snippet-clipboard.pasteEditedSnippet",
         "title": "Edit and Paste last snippet",
-        "category": "Quick Snippet"
+        "category": "Snippet Clipboard",
+        "enablement": "editorTextFocus & !editorReadonly"
       },
       {
-        "command": "quick-snippets.pasteSelectClipboardSnippet",
+        "command": "snippet-clipboard.pasteSelectClipboardSnippet",
         "title": "Paste a previous Snippet",
-        "category": "Quick Snippet"
+        "category": "Snippet Clipboard",
+        "enablement": "editorTextFocus & !editorReadonly"
       },
       {
-        "command": "quick-snippets.pasteSelectEditedSnippet",
+        "command": "snippet-clipboard.pasteSelectEditedSnippet",
         "title": "Edit and Paste a previous snippet",
-        "category": "Quick Snippet"
+        "category": "Snippet Clipboard",
+        "enablement": "editorTextFocus & !editorReadonly"
       },
       {
-        "command": "quick-snippets.editSnippetClipboard",
+        "command": "snippet-clipboard.editSnippetClipboard",
         "title": "Edit last Snippet",
-        "category": "Quick Snippet"
+        "category": "Snippet Clipboard"
       },
       {
-        "command": "quick-snippets.editClipboardAsSnippet",
+        "command": "snippet-clipboard.editSelectSnippetClipboard",
+        "title": "Edit a previous Snippet",
+        "category": "Snippet Clipboard"
+      },
+      {
+        "command": "snippet-clipboard.editClipboardAsSnippet",
         "title": "Edit Clipboard as Snippet",
-        "category": "Quick Snippet"
+        "category": "Snippet Clipboard"
       },
       {
-        "command": "quick-snippets.applySelectionTemplates",
+        "command": "snippet-clipboard.applySelectionTemplates",
         "title": "Convert Selection to Templates",
-        "category": "Quick Snippet"
+        "category": "Snippet Clipboard",
+        "enablement": "editorTextFocus & editorHasSelection"
       },
       {
-        "command": "quick-snippets.applySelectionCounter",
+        "command": "snippet-clipboard.applySelectionCounter",
         "title": "Convert Selection to Counter",
-        "category": "Quick Snippet"
+        "category": "Snippet Clipboard",
+        "enablement": "editorTextFocus & editorHasSelection"
       },
       {
-        "command": "quick-snippets.clearSnippetClipboard",
+        "command": "snippet-clipboard.clearSnippetClipboard",
         "title": "Clear Snippet Clipboard",
-        "category": "Quick Snippet"
+        "category": "Snippet Clipboard"
       },
       {
-        "command": "quick-snippets.resetClipboardIndex",
+        "command": "snippet-clipboard.resetClipboardIndex",
         "title": "Reset Clipboard Counter",
-        "category": "Quick Snippet"
+        "category": "Snippet Clipboard"
       }
     ],
     "configuration": [
       {
-        "title": "Quick Snippets",
+        "title": "Snippet Clipboard",
         "properties": {
-          "quick-snippets.queryForTemplates": {
+          "snippet-clipboard.queryForTemplates": {
             "description": "Query for templates when creating snippets",
             "default": true,
             "type": "boolean"
           },
-          "quick-snippets.queryTemplatesChecked": {
+          "snippet-clipboard.queryTemplatesChecked": {
             "description": "Check all templates by default when querying",
             "default": false,
             "type": "boolean"
           },
-          "quick-snippets.alwaysEditTemplates": {
+          "snippet-clipboard.alwaysEditTemplates": {
             "description": "Always edit templates when creating snippets",
             "default": false,
             "type": "boolean"
           },
-          "quick-snippets.keepPlaceholders": {
+          "snippet-clipboard.keepPlaceholders": {
             "description": "Keep original as placeholders when creating templates",
             "default": true,
             "type": "boolean"
           },
-          "quick-snippets.appendToExistingTemplates": {
+          "snippet-clipboard.appendToExistingTemplates": {
             "description": "Append to existing templates when creating snippets",
             "default": false,
             "type": "boolean"
           },
-          "quick-snippets.keepHistory": {
+          "snippet-clipboard.keepHistory": {
             "description": "Number of snippets to keep in history",
             "default": 10,
             "type": "number"
           },
-          "quick-snippets.reservedWords": {
+          "snippet-clipboard.reservedWords": {
             "description": "Reserved words that do not create variable templates",
             "default": [
               "true",
@@ -185,7 +201,7 @@
               "type": "string"
             }
           },
-          "quick-snippets.autoTemplate": {
+          "snippet-clipboard.autoTemplate": {
             "description": "Automatically convert to templates",
             "type": "object",
             "default": {
@@ -248,7 +264,7 @@
     "package": "webpack --mode production --devtool hidden-source-map",
     "test-compile": "tsc -p ./",
     "test-watch": "tsc -watch -p ./",
-    "pretest": "npm run test-compile && npm run lint",
+    "pretest": "npm run test-compile & npm run lint",
     "lint": "eslint src --ext ts",
     "test": "node ./out/test/runTest.js"
   },
