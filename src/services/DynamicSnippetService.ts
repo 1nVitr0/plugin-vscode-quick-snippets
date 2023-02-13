@@ -17,7 +17,8 @@ export class DynamicSnippetService implements Disposable {
       const initialIndent = selection.start.character;
       const text = this.removeIndent(editor.document.getText(selection), initialIndent);
       const templates = await this.getTemplates(text);
-      const snippet = new SnippetString(this.replaceTemplates(text, templates, templateOffset));
+      let snippet = new SnippetString(this.replaceTemplates(text, templates, templateOffset));
+      if (this.config.alwaysEditTemplates) snippet = await this.services.editor.provideEditorEditedSnippet(snippet);
 
       templateOffset += templates.length;
       snippets.push(snippet);
@@ -29,7 +30,10 @@ export class DynamicSnippetService implements Disposable {
   public async provideClipboardSnippet (): Promise<SnippetString[]> {
     const text = this.removeIndent(await env.clipboard.readText());
     const templates = await this.getTemplates(text);
-    return [new SnippetString(this.replaceTemplates(text, templates, 0))];
+    let snippet = new SnippetString(this.replaceTemplates(text, templates, 0));
+    if (this.config.alwaysEditTemplates) snippet = await this.services.editor.provideEditorEditedSnippet(snippet);
+
+    return [snippet];
   }
 
   public async provideSnippetClipboardSnippet (index = 0): Promise<SnippetString[] | undefined> {
