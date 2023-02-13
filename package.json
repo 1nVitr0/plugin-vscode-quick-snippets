@@ -2,6 +2,7 @@
   "name": "snippet-clipboard",
   "displayName": "Quick Snippets (Snippet Clipboard)",
   "description": "Copy and paste your clipboard as vscode snippets",
+  "icon": "resources/icon.png",
   "author": "1nVitr0",
   "publisher": "1nVitr0",
   "repository": {
