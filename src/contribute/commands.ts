@@ -1,7 +1,7 @@
 import { commands } from 'vscode';
 import { applySelectionTemplates, applySelectionCounter } from '../commands/applySelectionTemplates';
 import { copyToSnippet, copyEditToSnippet } from '../commands/copyToSnippet';
-import { editClipboardAsSnippet, editSnippetClipboard, clearSnippetClipboard } from '../commands/editSnippetClipboard';
+import { editClipboardAsSnippet, editSnippetClipboard, clearSnippetClipboard, editSelectSnippetClipboard } from '../commands/editSnippetClipboard';
 import { pasteAsSnippet, pasteEditAsSnippet } from '../commands/pasteAsSnippet';
 import { pasteClipboardSnippet, pasteEditedSnippet, pasteSelectClipboardSnippet, pasteSelectEditedSnippet } from '../commands/pasteClipboardSnippet';
 import { SnippetServiceProvider } from '../providers/SnippetServiceProvider';
@@ -19,6 +19,7 @@ export default function contributeCommands (services: SnippetServiceProvider, co
     commands.registerTextEditorCommand('snippet-clipboard.pasteSelectClipboardSnippet', pasteSelectClipboardSnippet.bind(null, services)),
     commands.registerTextEditorCommand('snippet-clipboard.pasteSelectEditedSnippet', pasteSelectEditedSnippet.bind(null, services)),
     commands.registerTextEditorCommand('snippet-clipboard.editSnippetClipboard', editSnippetClipboard.bind(null, services)),
+    commands.registerTextEditorCommand('snippet-clipboard.editSelectSnippetClipboard', editSelectSnippetClipboard.bind(null, services)),
     commands.registerTextEditorCommand('snippet-clipboard.editClipboardAsSnippet', editClipboardAsSnippet.bind(null, services)),
     commands.registerTextEditorCommand('snippet-clipboard.clearSnippetClipboard', clearSnippetClipboard.bind(null, services)),
     commands.registerTextEditorCommand('snippet-clipboard.applySelectionTemplates', applySelectionTemplates.bind(null, services, contentProvider)),
