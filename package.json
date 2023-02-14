@@ -1,14 +1,14 @@
 {
-  "name": "quick-snippets",
-  "displayName": "Quick Snippets",
+  "name": "snippet-clipboard",
+  "displayName": "Quick Snippets (Snippet Clipboard)",
   "description": "Copy and paste your clipboard as vscode snippets",
+  "icon": "resources/icon.png",
   "author": "1nVitr0",
   "publisher": "1nVitr0",
   "repository": {
     "type": "git",
-    "url": "https://github.com/1nVitr0/plugin-vscode-quick-snipet.git"
+    "url": "https://github.com/1nVitr0/plugin-vscode-quick-snippets.git"
   },
-  "icon": "resources/icon.png",
   "version": "0.1.2",
   "engines": {
     "vscode": "^1.72.0"
