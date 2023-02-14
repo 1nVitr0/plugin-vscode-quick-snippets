@@ -14,9 +14,11 @@ export class DynamicSnippetService implements Disposable {
 
     let templateOffset = 1;
     for (const selection of editor.selections) {
-      const text = editor.document.getText(selection);
+      const initialIndent = selection.start.character;
+      const text = this.removeIndent(editor.document.getText(selection), initialIndent);
       const templates = await this.getTemplates(text);
-      const snippet = new SnippetString(this.replaceTemplates(text, templates, templateOffset));
+      let snippet = new SnippetString(this.replaceTemplates(text, templates, templateOffset));
+      if (this.config.alwaysEditTemplates) snippet = await this.services.editor.provideEditorEditedSnippet(snippet);
 
       templateOffset += templates.length;
       snippets.push(snippet);
@@ -26,9 +28,12 @@ export class DynamicSnippetService implements Disposable {
   }
 
   public async provideClipboardSnippet (): Promise<SnippetString[]> {
-    const text = await env.clipboard.readText();
+    const text = this.removeIndent(await env.clipboard.readText());
     const templates = await this.getTemplates(text);
-    return [new SnippetString(this.replaceTemplates(text, templates, 0))];
+    let snippet = new SnippetString(this.replaceTemplates(text, templates, 0));
+    if (this.config.alwaysEditTemplates) snippet = await this.services.editor.provideEditorEditedSnippet(snippet);
+
+    return [snippet];
   }
 
   public async provideSnippetClipboardSnippet (index = 0): Promise<SnippetString[] | undefined> {
@@ -59,6 +64,18 @@ export class DynamicSnippetService implements Disposable {
     );
 
     return edit;
+  }
+
+  private removeIndent (text: string, initialIndent: number = Infinity): string {
+    const lineEnding = text.includes("\r\n") ? "\r\n" : "\n";
+    const lines = text.split(lineEnding);
+    if (initialIndent !== Infinity) lines.shift(); // Ignore first line
+    const indent = lines.reduce((indent, line) => {
+      const match = line.match(/^\s*/);
+      return match && match[0].length < indent ? match[0].length : indent;
+    }, initialIndent);
+
+    return lines.map((line) => line.slice(indent)).join("\n");
   }
 
   private replaceIndex (snippets: SnippetString[], index: number = 0) {

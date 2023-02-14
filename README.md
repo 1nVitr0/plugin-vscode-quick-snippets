@@ -1,11 +1,11 @@
-# Quick Snippets
+# Snippet Clipboard
 
-[![Visual Studio Code extension 1nVitr0.quick-snippets](https://img.shields.io/visual-studio-marketplace/v/1nVitr0.quick-snippets?logo=visualstudiocode)](https://marketplace.visualstudio.com/items?itemName=1nVitr0.quick-snippets)
-[![Installs for Visual Studio Code extension 1nVitr0.quick-snippets](https://img.shields.io/visual-studio-marketplace/i/1nVitr0.quick-snippets?logo=visualstudiocode)](https://marketplace.visualstudio.com/items?itemName=1nVitr0.quick-snippets)
-[![Rating for Visual Studio Code extension 1nVitr0.quick-snippets](https://img.shields.io/visual-studio-marketplace/r/1nVitr0.quick-snippets?logo=visualstudiocode)](https://marketplace.visualstudio.com/items?itemName=1nVitr0.quick-snippets)
+[![Visual Studio Code extension 1nVitr0.snippet-clipboard](https://img.shields.io/visual-studio-marketplace/v/1nVitr0.snippet-clipboard?logo=visualstudiocode)](https://marketplace.visualstudio.com/items?itemName=1nVitr0.snippet-clipboard)
+[![Installs for Visual Studio Code extension 1nVitr0.snippet-clipboard](https://img.shields.io/visual-studio-marketplace/i/1nVitr0.snippet-clipboard?logo=visualstudiocode)](https://marketplace.visualstudio.com/items?itemName=1nVitr0.snippet-clipboard)
+[![Rating for Visual Studio Code extension 1nVitr0.snippet-clipboard](https://img.shields.io/visual-studio-marketplace/r/1nVitr0.snippet-clipboard?logo=visualstudiocode)](https://marketplace.visualstudio.com/items?itemName=1nVitr0.snippet-clipboard)
 [![semantic-release](https://img.shields.io/badge/%20%20%F0%9F%93%A6%F0%9F%9A%80-semantic--release-e10079.svg)](https://github.com/semantic-release/semantic-release)
 
-![Copy Paste with smarts!](https://raw.githubusercontent.com/1nVitr0/plugin-vscode-quick-snippets/main/resources/demo.gif)
+![Copy Paste with smarts!](https://raw.githubusercontent.com/1nVitr0/plugin-vscode-snippet-clipboard/main/resources/demo.gif)
 
 Copy Paste with smarts! Copy and paste code as vscode snippets, saving you time and copy-paste errors.
 
@@ -36,31 +36,31 @@ The extension adds commands for quickly copying and pasting code as a snippet. S
 <details>
 <summary>This extension contributes the following commands:</summary>
 
-`Quick Snippets: Copy as snippet`: Copy the current selection to a snippet
+`Snippet Clipboard: Copy as snippet`: Copy the current selection to a snippet
 
-`Quick Snippets: Copy and Edit as Snippet`: Copy the current selection to a snippet and open an editor
+`Snippet Clipboard: Copy and Edit as Snippet`: Copy the current selection to a snippet and open an editor
 
-`Quick Snippets: Paste as Snippet`: Paste the current clipboard as a snippet
+`Snippet Clipboard: Paste as Snippet`: Paste the current clipboard as a snippet
 
-`Quick Snippets: Paste last Snippet`: Paste the last snippet again
+`Snippet Clipboard: Paste last Snippet`: Paste the last snippet again
 
-`Quick Snippets: Paste a previous Snippet`: Select and paste a previous Snippet
+`Snippet Clipboard: Paste a previous Snippet`: Select and paste a previous Snippet
 
-`Quick Snippets: Edit last Snippet`: Edit the last snippet
+`Snippet Clipboard: Edit last Snippet`: Edit the last snippet
 
-`Quick Snippets: Edit Clipboard as Snippet`: Edit the current clipboard as a snippet
+`Snippet Clipboard: Edit Clipboard as Snippet`: Edit the current clipboard as a snippet
 
-`Quick Snippets: Edit and Paste as Snippet`: Edit the current clipboard and paste as snippet
+`Snippet Clipboard: Edit and Paste as Snippet`: Edit the current clipboard and paste as snippet
 
-`Quick Snippets: Edit and Paste last snippet`: Edit the last snippet and paste it
+`Snippet Clipboard: Edit and Paste last snippet`: Edit the last snippet and paste it
 
-`Quick Snippets: Edit and Paste a previous snippet`: Select, edit and paste a previous Snippet
+`Snippet Clipboard: Edit and Paste a previous snippet`: Select, edit and paste a previous Snippet
 
-`Quick Snippets: Convert Selection to Templates`: Convert the currently selected keyword(s) to a snippet template
+`Snippet Clipboard: Convert Selection to Templates`: Convert the currently selected keyword(s) to a snippet template
 
-`Quick Snippets: Clear Snippet Clipboard`: Clear the snippet history
+`Snippet Clipboard: Clear Snippet Clipboard`: Clear the snippet history
 
-`Quick Snippets: Reset Clipboard Index`: Reset the incrementing counter for the current clipboard
+`Snippet Clipboard: Reset Clipboard Index`: Reset the incrementing counter for the current clipboard
 
 </details>
 
@@ -72,19 +72,19 @@ The extension adds commands for quickly copying and pasting code as a snippet. S
 <summary>This extension contributed the following settings:</summary>
 
 
-`quick-snippets.queryForTemplates`: Query for templates when creating snippets
+`snippet-clipboard.queryForTemplates`: Query for templates when creating snippets
 
-`quick-snippets.queryTemplatesChecked`: Check all templates by default when querying
+`snippet-clipboard.queryTemplatesChecked`: Check all templates by default when querying
 
-`quick-snippets.alwaysEditTemplates`: Always edit templates when creating snippets
+`snippet-clipboard.alwaysEditTemplates`: Always edit templates when creating snippets
 
-`quick-snippets.keepPlaceholders`: Keep original as placeholders when creating templates
+`snippet-clipboard.keepPlaceholders`: Keep original as placeholders when creating templates
 
-`quick-snippets.appendToExistingTemplates`: Append to existing templates when creating snippets
+`snippet-clipboard.appendToExistingTemplates`: Append to existing templates when creating snippets
 
-`quick-snippets.reservedWords`: Reserved words that do not create variable templates
+`snippet-clipboard.reservedWords`: Reserved words that do not create variable templates
 
-`quick-snippets.autoTemplate`: List of types to automatically convert to templates when creating snippets
+`snippet-clipboard.autoTemplate`: List of types to automatically convert to templates when creating snippets
 
 </details>
 
@@ -92,7 +92,7 @@ The extension adds commands for quickly copying and pasting code as a snippet. S
 
 ## Known Issues
 
-- keywords can be detected as variables when creating snippets with automatic templates. Use `quick-snippets.reservedWords` to exclude specific keywords.
+- keywords can be detected as variables when creating snippets with automatic templates. Use `snippet-clipboard.reservedWords` to exclude specific keywords.
 
 ***
 
