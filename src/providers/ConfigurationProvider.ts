@@ -22,9 +22,9 @@ export class ConfigurationProvider implements ExtensionConfiguration, Disposable
   private config: WorkspaceConfiguration;
 
   public constructor() {
-    this.config = workspace.getConfiguration('quick-snippets');
+    this.config = workspace.getConfiguration('snippet-clipboard');
     this.disposables.push(workspace.onDidChangeConfiguration(() => {
-      this.config = workspace.getConfiguration('quick-snippets');
+      this.config = workspace.getConfiguration('snippet-clipboard');
     }));
   }
 
