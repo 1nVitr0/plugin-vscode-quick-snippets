@@ -7,7 +7,7 @@
   "publisher": "1nVitr0",
   "repository": {
     "type": "git",
-    "url": "https://github.com/1nVitr0/plugin-vscode-quick-snippets.git"
+    "url": "https://github.com/1nVitr0/plugin-vscode-snippet-clipboard.git"
   },
   "version": "0.1.2",
   "engines": {
