@@ -3,21 +3,6 @@
     "main",
     "develop"
   ],
-  "verifyConditions": [
-    "semantic-release-vsce",
-    "@semantic-release/github"
-  ],
-  "prepare": {
-    "path": "semantic-release-vsce",
-    "packageVsix": true
-  },
-  "publish": [
-    "semantic-release-vsce",
-    {
-      "path": "@semantic-release/github",
-      "assets": "*.vsix"
-    }
-  ],
   "plugins": [
     "@semantic-release/commit-analyzer",
     "@semantic-release/release-notes-generator",
@@ -33,6 +18,17 @@
         ]
       }
     ],
-    "@semantic-release/github"
+    [
+      "semantic-release-vsce",
+      {
+        "packageVsix": true
+      }
+    ],
+    [
+      "@semantic-release/github",
+      {
+        "assets": "*.vsix"
+      }
+    ]
   ]
 }
