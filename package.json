@@ -49,49 +49,49 @@
         "command": "snippet-clipboard.copyToSnippet",
         "title": "Copy as snippet",
         "category": "Snippet Clipboard",
-        "enablement": "editorTextFocus && editorHasSelection"
+        "enablement": "editorHasSelection"
       },
       {
         "command": "snippet-clipboard.copyEditToSnippet",
         "title": "Copy and Edit as Snippet",
         "category": "Snippet Clipboard",
-        "enablement": "editorTextFocus && editorHasSelection"
+        "enablement": "editorHasSelection"
       },
       {
         "command": "snippet-clipboard.pasteAsSnippet",
         "title": "Paste as Snippet",
         "category": "Snippet Clipboard",
-        "enablement": "editorTextFocus && !editorReadonly"
+        "enablement": "!editorReadonly"
       },
       {
         "command": "snippet-clipboard.pasteEditAsSnippet",
         "title": "Edit and Paste as Snippet",
         "category": "Snippet Clipboard",
-        "enablement": "editorTextFocus && !editorReadonly"
+        "enablement": "!editorReadonly"
       },
       {
         "command": "snippet-clipboard.pasteClipboardSnippet",
         "title": "Paste last Snippet",
         "category": "Snippet Clipboard",
-        "enablement": "editorTextFocus && !editorReadonly"
+        "enablement": "!editorReadonly"
       },
       {
         "command": "snippet-clipboard.pasteEditedSnippet",
         "title": "Edit and Paste last snippet",
         "category": "Snippet Clipboard",
-        "enablement": "editorTextFocus && !editorReadonly"
+        "enablement": "!editorReadonly"
       },
       {
         "command": "snippet-clipboard.pasteSelectClipboardSnippet",
         "title": "Paste a previous Snippet",
         "category": "Snippet Clipboard",
-        "enablement": "editorTextFocus && !editorReadonly"
+        "enablement": "!editorReadonly"
       },
       {
         "command": "snippet-clipboard.pasteSelectEditedSnippet",
         "title": "Edit and Paste a previous snippet",
         "category": "Snippet Clipboard",
-        "enablement": "editorTextFocus && !editorReadonly"
+        "enablement": "!editorReadonly"
       },
       {
         "command": "snippet-clipboard.editSnippetClipboard",
@@ -112,13 +112,13 @@
         "command": "snippet-clipboard.applySelectionTemplates",
         "title": "Convert Selection to Templates",
         "category": "Snippet Clipboard",
-        "enablement": "editorTextFocus && editorHasSelection"
+        "enablement": "editorHasSelection"
       },
       {
         "command": "snippet-clipboard.applySelectionCounter",
         "title": "Convert Selection to Counter",
         "category": "Snippet Clipboard",
-        "enablement": "editorTextFocus && editorHasSelection"
+        "enablement": "editorHasSelection"
       },
       {
         "command": "snippet-clipboard.clearSnippetClipboard",
@@ -279,6 +279,8 @@
         "key": "ctrl+meta+c alt+v",
         "when": "editorTextFocus && !editorReadonly"
       },
+      
+
       {
         "command": "snippet-clipboard.pasteAsSnippet",
         "key": "ctrl+meta+c shift+v",
