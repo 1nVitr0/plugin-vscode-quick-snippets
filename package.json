@@ -369,6 +369,7 @@
     "webpack-cli": "^5.0.1"
   },
   "dependencies": {
+    "escape-string-regexp": "^5.0.0",
     "node-fetch": "^3.3.0"
   }
 }

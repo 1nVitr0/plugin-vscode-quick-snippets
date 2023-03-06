@@ -49,12 +49,14 @@ export class SnippetEditorService implements Disposable {
 
     for (const selection of selections) {
       const { start, end } = selection;
-      const text = documentText.slice(document.offsetAt(start), document.offsetAt(end));
+      const offsetStart = document.offsetAt(start);
+      const text = documentText.slice(offsetStart, document.offsetAt(end));
       const index = templates.indexOf(text);
-      const template = keepPlaceholders
+      let template = keepPlaceholders
         ? `\$\{${index > -1 ? index + 1 : ++nextIndex}:${text}\}`
         : `\$${index > -1 ? index + 1 : ++nextIndex}`;
 
+      if (documentText[offsetStart - 1] === "\\") template = `\\${template}`;
       if (index === -1) templates.push(text);
       textEdit.replace(selection, template);
     }
