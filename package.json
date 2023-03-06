@@ -10,7 +10,7 @@
     "type": "git",
     "url": "https://github.com/1nVitr0/plugin-vscode-snippet-clipboard.git"
   },
-  "version": "1.1.5",
+  "version": "1.1.6",
   "engines": {
     "vscode": "^1.72.0"
   },
