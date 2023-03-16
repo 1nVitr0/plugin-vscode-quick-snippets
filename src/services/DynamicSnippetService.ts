@@ -8,7 +8,6 @@ import {
   SnippetTextEdit,
   TextEditor,
   window,
-  workspace,
   WorkspaceEdit,
 } from "vscode";
 import { ExtensionConfiguration } from "../providers/ConfigurationProvider";
@@ -124,62 +123,126 @@ export class DynamicSnippetService implements Disposable {
 
   private async getTemplates(text: string): Promise<string[]> {
     const { autoTemplate, queryForTemplates, queryTemplatesChecked, reservedWords } = this.config;
+    let templates: Record<string, number> = {};
 
-    const templates: string[] = [];
     if (autoTemplate.integers) {
       const matches = text.match(/\b\d+\b/g);
-      if (matches) templates.push(...matches);
+      if (matches) templates = { ...templates, ...this.filterRepeats(matches, 1) };
     }
+
     if (autoTemplate.floats) {
       const matches = text.match(/\b\d+\.\d+\b/g);
-      if (matches) templates.push(...matches);
+      if (matches) templates = { ...templates, ...this.filterRepeats(matches, 1) };
     }
+
     if (autoTemplate.htmlColors) {
       const matches = text.match(/\b#(?:[A-Fa-f0-9]{3}|[A-Fa-f0-9]{6})\b/g);
-      if (matches) templates.push(...matches);
+      if (matches) templates = { ...templates, ...this.filterRepeats(matches, 1) };
     }
+
     if (autoTemplate.repeatStrings) {
       const minRepeat = typeof autoTemplate.repeatStrings === "number" ? autoTemplate.repeatStrings : 2;
       const strings = text.match(/"((?<=\\)"|[^"])+"|'((?<=\\)'|[^'])+'|`((?<=\\)`|[^`])+`/g) ?? [];
-      const repeatStrings = this.filterRepeats(strings, minRepeat);
-      templates.push(...repeatStrings);
+      templates = { ...templates, ...this.filterRepeats(strings, minRepeat) };
     }
 
-    const cleanedText = this.replaceTemplates(text, templates, "");
-
     if (autoTemplate.repeatVars) {
+      const cleanedText = this.replaceTemplates(text, Object.keys(templates), "");
       const minRepeat = typeof autoTemplate.repeatVars === "number" ? autoTemplate.repeatVars : 2;
       const vars = cleanedText.match(/(?<=\W|^)\w+(?=\W|$)/g) ?? [];
       const reserved: string[] = reservedWords;
-      const repeatVars = this.filterRepeats(vars, minRepeat, reserved);
-      templates.push(...repeatVars);
+      templates = { ...templates, ...this.filterRepeats(vars, minRepeat, reserved) };
+    }
+
+    if (autoTemplate.repeatSpacedTerms) {
+      const minRepeat = typeof autoTemplate.repeatStrings === "number" ? autoTemplate.repeatStrings : 2;
+      const terms = this.getRepeatSpacedTerms(text, minRepeat, templates);
+      templates = { ...templates, ...terms };
     }
 
     if (queryForTemplates) {
-      const items: QuickPickItem[] = templates.map((template) => ({
-        label: template,
-        picked: queryTemplatesChecked,
-        kind: QuickPickItemKind.Default,
-      }));
+      const items: QuickPickItem[] = Object.entries(templates)
+        .sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]))
+        .map(([template, count]) => ({
+          label: template,
+          picked: queryTemplatesChecked,
+          kind: QuickPickItemKind.Default,
+          description: `Used ${count} times`,
+        }));
       const picked = await window.showQuickPick(items, {
         title: "Select templates to use",
         canPickMany: true,
+        ignoreFocusOut: true,
       });
 
-      if (picked) templates.splice(0, templates.length, ...picked.map((item) => item.label));
+      if (picked) return picked.map((item) => item.label);
+      else return [];
     }
 
-    return templates;
+    return Object.keys(templates);
   }
 
-  private filterRepeats(strings: string[], minRepeat: number, ignore?: string[]): string[] {
+  private filterRepeats(strings: string[], minRepeat: number, ignore?: string[]): Record<string, number> {
     const counts = strings.reduce<Record<string, number>>((counts, str) => {
       counts[str] = counts[str] ? counts[str] + 1 : 1;
       return counts;
     }, {});
 
-    return Object.entries(counts)
-      .filter(([str, count]) => count >= minRepeat && !ignore?.includes(str))
-      .map(([str]) => str);
+    return Object.entries(counts).reduce<Record<string, number>>((repeats, [str, count]) => {
+      if (count >= minRepeat && !ignore?.includes(str)) repeats[str] = count;
+      return repeats;
+    }, {});
+  }
+
+  private getRepeatSpacedTerms(
+    text: string,
+    minRepeat: number,
+    ignore?: Record<string, number>
+  ): Record<string, number> {
+    const wordRegex = /\b\w+\b/g;
+
+    let templates: Record<string, number> = {};
+    let words: RegExpExecArray[] = [];
+    let match: RegExpExecArray | null;
+    let skipTemplates = true;
+    while ((match = wordRegex.exec(text))) words.push(match);
+
+    while (words.length) {
+      const strings = words.map((word) => word[0]);
+      const repeatStrings = this.filterRepeats(strings, minRepeat);
+      const repeatStringTexts = Object.keys(repeatStrings);
+      words = words.filter((word) => repeatStringTexts.includes(word[0]));
+
+      if (!skipTemplates || (skipTemplates = false)) templates = { ...templates, ...repeatStrings };
+
+      words = words
+        .map((word) => {
+          const { index, [0]: original } = word;
+          let result = original;
+          let stopAtWordBreak = false;
+          for (let i = index + original.length; true; i++) {
+            const nextChar = text[i];
+            if (nextChar === " " || nextChar === "\t" || nextChar === "-") {
+              if (stopAtWordBreak) break;
+              else result += nextChar;
+              stopAtWordBreak = true;
+            } else if (/\w/.test(nextChar)) {
+              result += nextChar;
+            } else {
+              break;
+            }
+          }
+
+          return result.trim() !== original ? { ...word, [0]: result } : null;
+        })
+        .filter((word) => !!word) as RegExpExecArray[];
+    }
+
+    if (ignore) {
+      // Remove any templates that were already found
+      for (const template of Object.keys(ignore)) delete templates[template];
+    }
+
+    return templates;
   }
 }

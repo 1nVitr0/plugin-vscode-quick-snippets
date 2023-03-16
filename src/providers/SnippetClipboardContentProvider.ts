@@ -1,6 +1,12 @@
 import { randomUUID } from 'crypto';
-import { CancellationToken, EventEmitter, ProviderResult, TextDocumentContentProvider, Uri, TextEditorEdit } from 'vscode';
-import { SnippetServiceProvider } from './SnippetServiceProvider';
+import {
+  CancellationToken,
+  EventEmitter,
+  ProviderResult,
+  TextDocumentContentProvider,
+  Uri,
+  TextEditorEdit,
+} from "vscode";
 import { StringTextEditProvider } from './StringTextEditProvider';
 
 export class SnippetClipboardContentProvider implements TextDocumentContentProvider {

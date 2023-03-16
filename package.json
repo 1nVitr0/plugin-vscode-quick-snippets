@@ -210,8 +210,9 @@
               "integers": false,
               "floats": false,
               "htmlColors": true,
-              "repeatVars": 2,
-              "repeatStrings": 2
+              "repeatVars": 1,
+              "repeatStrings": 1,
+              "repeatSpacedTerms": 2
             },
             "properties": {
               "integers": {
@@ -231,7 +232,7 @@
               },
               "repeatVars": {
                 "description": "Convert repeated variables to templates (minimum occurrence, true is equivalent to 2)",
-                "default": 2,
+                "default": 1,
                 "oneOf": [
                   {
                     "type": "boolean"
@@ -243,6 +244,18 @@
               },
               "repeatStrings": {
                 "description": "Convert repeated strings to templates (minimum occurrence, true is equivalent to 2)",
+                "default": 1,
+                "oneOf": [
+                  {
+                    "type": "boolean"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ]
+              },
+              "repeatSpacedTerms": {
+                "description": "Convert repeated spaced terms to templates (minimum occurrence, true is equivalent to 2)",
                 "default": 2,
                 "oneOf": [
                   {
