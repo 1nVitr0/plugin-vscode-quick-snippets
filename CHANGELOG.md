@@ -1,3 +1,10 @@
+# [1.2.0](https://github.com/1nVitr0/plugin-vscode-snippet-clipboard/compare/v1.1.6...v1.2.0) (2023-03-16)
+
+
+### Features
+
+* add spaced term templates & sort QuickPick ([c27ad57](https://github.com/1nVitr0/plugin-vscode-snippet-clipboard/commit/c27ad5744949fd396269972c60d2cdbc11bfad32))
+
 ## [1.1.6](https://github.com/1nVitr0/plugin-vscode-snippet-clipboard/compare/v1.1.5...v1.1.6) (2023-03-06)
 
 
