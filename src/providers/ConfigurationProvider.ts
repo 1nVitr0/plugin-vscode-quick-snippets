@@ -12,8 +12,9 @@ export interface ExtensionConfiguration {
     integers?: boolean; // Default: false
     floats?: boolean; // Default: false
     htmlColors?: boolean; // Default: true
-    repeatVars?: boolean | number; // Default: 2
-    repeatStrings?: boolean | number; // Default: 2
+    repeatVars?: boolean | number; // Default: 1
+    repeatStrings?: boolean | number; // Default: 1
+    repeatSpacedTerms?: boolean | number; // Default: 2
   }
 }
 
@@ -61,8 +62,9 @@ export class ConfigurationProvider implements ExtensionConfiguration, Disposable
       integers: false,
       floats: false,
       htmlColors: true,
-      repeatVars: 2,
-      repeatStrings: 2,
+      repeatVars: 1,
+      repeatStrings: 1,
+      repeatSpacedTerms: 2
     });
   }
 
