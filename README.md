@@ -26,6 +26,8 @@ The extension adds commands for quickly copying and pasting code as a snippet. S
 
 - Creating snippets from the current selection (with multi cursor support)
 - Creating snippets from the current clipboard content
+  - Select from numbers, variables, strings and duplicate phrases
+  - transform integers into counter templates, that increment with each paste
 - Editing sippets before pasting them
 - Pasting snippets with templates that automatically increment / decrement a value
 - Paste previous snippets again (History size can be adjusted and works across windows)
@@ -37,31 +39,31 @@ The extension adds commands for quickly copying and pasting code as a snippet. S
 <details>
 <summary>This extension contributes the following commands:</summary>
 
-`Snippet Clipboard: Copy as snippet`: Copy the current selection to a snippet
+`Snippet Clipboard: Copy as snippet`:  Copy the current selection to a snippet (<kbd>Ctrl</kbd>`+`<kbd>Meta</kbd>`+`<kbd>C</kbd>`  `<kbd>C</kbd>)
 
-`Snippet Clipboard: Copy and Edit as Snippet`: Copy the current selection to a snippet and open an editor
+`Snippet Clipboard: Copy and Edit as Snippet`:  Copy the current selection to a snippet and open an editor (<kbd>Ctrl</kbd>`+`<kbd>Meta</kbd>`+`<kbd>C</kbd>`  `<kbd>Alt</kbd>`+`<kbd>C</kbd>)
 
-`Snippet Clipboard: Paste as Snippet`: Paste the current clipboard as a snippet
+`Snippet Clipboard: Paste as Snippet`:  Paste the current clipboard as a snippet (<kbd>Ctrl</kbd>`+`<kbd>Meta</kbd>`+`<kbd>C</kbd>`  `<kbd>Shift</kbd>`+`<kbd>V</kbd>)
 
-`Snippet Clipboard: Paste last Snippet`: Paste the last snippet again
+`Snippet Clipboard: Paste last Snippet`:  Paste the last snippet again (<kbd>Ctrl</kbd>`+`<kbd>Meta</kbd>`+`<kbd>C</kbd>`  `<kbd>V</kbd>)
 
-`Snippet Clipboard: Paste a previous Snippet`: Select and paste a previous Snippet
+`Snippet Clipboard: Paste a previous Snippet`:  Select and paste a previous Snippet (<kbd>Ctrl</kbd>`+`<kbd>Meta</kbd>`+`<kbd>C</kbd>`  `<kbd>Ctrl</kbd>`+`<kbd>Shift</kbd>`+`<kbd>V</kbd>)
 
-`Snippet Clipboard: Edit last Snippet`: Edit the last snippet
+`Snippet Clipboard: Edit last Snippet`:   Edit the last snippet (<kbd>Ctrl</kbd>`+`<kbd>Meta</kbd>`+`<kbd>C</kbd>`  `<kbd>E</kbd>)
 
-`Snippet Clipboard: Edit Clipboard as Snippet`: Edit the current clipboard as a snippet
+`Snippet Clipboard: Edit Clipboard as Snippet`:  Edit the current clipboard as a snippet (<kbd>Ctrl</kbd>`+`<kbd>Meta</kbd>`+`<kbd>C</kbd>`  `<kbd>Shift</kbd>`+`<kbd>E</kbd>)
 
-`Snippet Clipboard: Edit and Paste as Snippet`: Edit the current clipboard and paste as snippet
+`Snippet Clipboard: Edit and Paste as Snippet`:   Edit the current clipboard and paste as snippet (<kbd>Ctrl</kbd>`+`<kbd>Meta</kbd>`+`<kbd>C</kbd>`  `<kbd>Alt</kbd>`+`<kbd>Shift</kbd>`+`<kbd>V</kbd>)
 
-`Snippet Clipboard: Edit and Paste last snippet`: Edit the last snippet and paste it
+`Snippet Clipboard: Edit and Paste last snippet`:  Edit the last snippet and paste it (<kbd>Ctrl</kbd>`+`<kbd>Meta</kbd>`+`<kbd>C</kbd>`  `<kbd>Alt</kbd>`+`<kbd>V</kbd>)
 
-`Snippet Clipboard: Edit and Paste a previous snippet`: Select, edit and paste a previous Snippet
+`Snippet Clipboard: Edit and Paste a previous snippet`:  Select, edit and paste a previous Snippet (<kbd>Ctrl</kbd>`+`<kbd>Meta</kbd>`+`<kbd>C</kbd>`  `<kbd>Ctrl</kbd>`+`<kbd>Alt</kbd>`+`<kbd>Shift</kbd>`+`<kbd>V</kbd>)
 
-`Snippet Clipboard: Convert Selection to Templates`: Convert the currently selected keyword(s) to a snippet template
+`Snippet Clipboard: Convert Selection to Templates`:  Convert the currently selected keyword(s) to a snippet template (<kbd>Ctrl</kbd>`+`<kbd>Meta</kbd>`+`<kbd>C</kbd>`  `<kbd>T</kbd>)
 
-`Snippet Clipboard: Clear Snippet Clipboard`: Clear the snippet history
+`Snippet Clipboard: Clear Snippet Clipboard`:  Clear the snippet history (<kbd>Ctrl</kbd>`+`<kbd>Meta</kbd>`+`<kbd>C</kbd>`  `<kbd>Shift</kbd>`+`<kbd>R</kbd>)
 
-`Snippet Clipboard: Reset Clipboard Index`: Reset the incrementing counter for the current clipboard
+`Snippet Clipboard: Reset Clipboard Index`:  Reset the incrementing counter for the current clipboard (<kbd>Ctrl</kbd>`+`<kbd>Meta</kbd>`+`<kbd>C</kbd>`  `<kbd>R</kbd>)
 
 </details>
 
