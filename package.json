@@ -1,6 +1,6 @@
 {
   "name": "snippet-clipboard",
-  "displayName": "Snippet Clipboard (Snippet Clipboard)",
+  "displayName": "Snippet Clipboard",
   "description": "Copy and paste your clipboard as vscode snippets",
   "license": "MIT",
   "icon": "resources/icon.png",
@@ -15,15 +15,15 @@
     "vscode": "^1.72.0"
   },
   "categories": [
-    "Data Science",
+    "Snippets",
     "Other"
   ],
   "keywords": [
-    "random",
-    "sample",
-    "pick",
-    "random lines",
-    "sampling"
+    "snippet",
+    "clipboard",
+    "copy",
+    "paste",
+    "quick snippets"
   ],
   "activationEvents": [
     "onCommand:snippet-clipboard.copyToSnippet",
