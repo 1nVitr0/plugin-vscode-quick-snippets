@@ -1,3 +1,10 @@
+## [1.3.1](https://github.com/1nVitr0/plugin-vscode-snippet-clipboard/compare/v1.3.0...v1.3.1) (2023-03-21)
+
+
+### Bug Fixes
+
+* update keywords and categories ([67fd461](https://github.com/1nVitr0/plugin-vscode-snippet-clipboard/commit/67fd461112a4148dc6e2996389582878fc5be419))
+
 # [1.3.0](https://github.com/1nVitr0/plugin-vscode-snippet-clipboard/compare/v1.2.0...v1.3.0) (2023-03-21)
 
 
