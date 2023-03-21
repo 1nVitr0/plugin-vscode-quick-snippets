@@ -97,11 +97,10 @@ export class SnippetEditorService implements Disposable {
   public async showTemplateSelectQuickPick(
     templates: Record<string, number>,
     queryTemplatesChecked?: boolean
-  ): Promise<SnippetTemplate[]> {
+  ): Promise<SnippetTemplate[] | undefined> {
     const quickPick = window.createQuickPick<QuickPickItem & { template?: string }>();
     quickPick.title = "Select templates to use";
     quickPick.canSelectMany = true;
-    quickPick.ignoreFocusOut = true;
     quickPick.items = Object.entries(templates)
       .sort(([, countA], [, countB]) => countB - countA)
       .map(([text, count]) => ({
@@ -121,10 +120,9 @@ export class SnippetEditorService implements Disposable {
     quickPick.onDidTriggerItemButton(async ({ item }) => {
       const { label } = item;
       item.template = `n+${label}`;
-      item.description = `$(symbol-numeric) Counter template: ${item.template}`;
+      item.detail = `$(symbol-numeric) Counter template: ${item.template}`;
+      quickPick.items = quickPick.items.map((i) => (i.label === label ? item : i));
       quickPick.selectedItems = [...quickPick.selectedItems, item];
-      quickPick.hide();
-      quickPick.show();
     });
 
     const picked = await new Promise<readonly (QuickPickItem & { template?: string })[] | undefined>((resolve) => {
@@ -136,11 +134,14 @@ export class SnippetEditorService implements Disposable {
       quickPick.show();
     });
 
-    if (picked) return picked.map((item) => item);
-    else return [];
+    return picked?.map((item) => item);
   }
 
-  public async showCounterTemplateQuickPick(n = 100, includeNegative = true, pick?: number): Promise<Counter | undefined> {
+  public async showCounterTemplateQuickPick(
+    n = 100,
+    includeNegative = true,
+    pick?: number
+  ): Promise<Counter | undefined> {
     const items: QuickPickItem[] = [
       { label: "Custom...", description: "Enter a custom counter offset" },
       { label: "n", picked: pick === 0 },
