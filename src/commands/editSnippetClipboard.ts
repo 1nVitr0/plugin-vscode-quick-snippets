@@ -31,9 +31,11 @@ export async function editSelectSnippetClipboard (services: SnippetServiceProvid
 
 export async function editClipboardAsSnippet (services: SnippetServiceProvider) {
   const clipboardSnippet = await services.dynamicSnippet.provideClipboardSnippet();
-  await services.clipboard.copy(clipboardSnippet);
 
-  await editSnippetClipboard(services);
+  if (clipboardSnippet.length) {
+    await services.clipboard.copy(clipboardSnippet);
+    await editSnippetClipboard(services);
+  }
 }
 
 export function clearSnippetClipboard (services: SnippetServiceProvider) {
