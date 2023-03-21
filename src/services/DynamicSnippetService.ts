@@ -1,17 +1,8 @@
 import escapeStringRegexp from "escape-string-regexp";
-import {
-  Disposable,
-  env,
-  QuickPickItem,
-  QuickPickItemKind,
-  SnippetString,
-  SnippetTextEdit,
-  TextEditor,
-  window,
-  WorkspaceEdit,
-} from "vscode";
+import { Disposable, env, SnippetString, SnippetTextEdit, TextEditor, WorkspaceEdit } from "vscode";
 import { ExtensionConfiguration } from "../providers/ConfigurationProvider";
 import { SnippetServiceProvider } from "../providers/SnippetServiceProvider";
+import { SnippetTemplate } from "./SnippetEditorService";
 
 export class DynamicSnippetService implements Disposable {
   public constructor(private services: SnippetServiceProvider, private config: ExtensionConfiguration) {}
@@ -28,6 +19,8 @@ export class DynamicSnippetService implements Disposable {
       const initialIndent = selection.start.character;
       const text = this.removeIndent(editor.document.getText(selection), initialIndent);
       const templates = await this.getTemplates(text);
+      if (!templates) continue;
+
       let snippet = new SnippetString(this.replaceTemplates(text, templates, templateOffset));
       if (this.config.alwaysEditTemplates) snippet = await this.services.editor.provideEditorEditedSnippet(snippet);
 
@@ -41,6 +34,8 @@ export class DynamicSnippetService implements Disposable {
   public async provideClipboardSnippet(): Promise<SnippetString[]> {
     const text = this.removeIndent(await env.clipboard.readText());
     const templates = await this.getTemplates(text);
+    if (!templates) return [];
+
     let snippet = new SnippetString(this.replaceTemplates(text, templates, 0));
     if (this.config.alwaysEditTemplates) snippet = await this.services.editor.provideEditorEditedSnippet(snippet);
 
@@ -90,7 +85,7 @@ export class DynamicSnippetService implements Disposable {
   }
 
   private replaceIndex(snippets: SnippetString[], index: number = 0) {
-    const regex = /\$\{(n\s*([+\-]\s*\d+)?|(\s*\d+)?\s*-n)\}/;
+    const regex = /\$\{(?:\d+:)?(n\s*([+\-]\s*\d+)?|(\s*\d+)?\s*-n)\}/;
     function replace(j: number, _: string, n?: string, offset?: string, negativeOffset?: string) {
       if (n === "-n") return `${-(index + j)}`;
       else if (negativeOffset) return `${parseInt(negativeOffset) - (index + j)}`;
@@ -103,26 +98,38 @@ export class DynamicSnippetService implements Disposable {
     });
   }
 
-  private replaceTemplates(text: string, templates: string[], startIndex?: number, keepPlaceholder?: boolean): string;
-  private replaceTemplates(text: string, templates: string[], replaceWith?: string): string;
-  private replaceTemplates(text: string, templates: string[], replaceWithOrStart: string | number = 0): string {
+  private replaceTemplates(
+    text: string,
+    templates: (string | SnippetTemplate)[],
+    startIndex?: number,
+    keepPlaceholder?: boolean
+  ): string;
+  private replaceTemplates(text: string, templates: (string | SnippetTemplate)[], replaceWith?: string): string;
+  private replaceTemplates(
+    text: string,
+    templates: (string | SnippetTemplate)[],
+    replaceWithOrStart: string | number = 0
+  ): string {
     const { keepPlaceholders } = this.config;
     const replaceWith = typeof replaceWithOrStart === "string" ? replaceWithOrStart : null;
 
     let newText = text;
     let i = typeof replaceWithOrStart === "number" ? replaceWithOrStart : 1;
-    for (const template of templates) {
-      const escaped = escapeStringRegexp(template);
-      const regex = new RegExp(`(?:\\b|\\\\)${escaped}\\b`, "g");
-      const replace = replaceWith ?? (keepPlaceholders ? `\${${i++}:${template}}` : template);
+    for (const entry of templates) {
+      const { label, template = undefined } = typeof entry === "object" && "label" in entry ? entry : { label: entry };
+      const truncated = /^".*"$/.test(label) ? label.slice(1, -1) : label;
+      const escaped = escapeStringRegexp(truncated);
+      const regex = /^".*"$/.test(label) ? new RegExp(`(?<=["'])${escaped}(?=["'])`, "g") :  new RegExp(`(?:\\b|\\\\)${escaped}\\b`, "g");
+      const replace = replaceWith ?? (keepPlaceholders ? `\${${i++}:${template ?? truncated}}` : template ?? truncated);
       newText = newText.replace(regex, (match) => (match.startsWith("\\") ? `\\${replace}` : replace));
     }
 
     return newText;
   }
 
-  private async getTemplates(text: string): Promise<string[]> {
+  private async getTemplates(text: string): Promise<SnippetTemplate[] | undefined> {
     const { autoTemplate, queryForTemplates, queryTemplatesChecked, reservedWords } = this.config;
+    const { editor } = this.services;
     let templates: Record<string, number> = {};
 
     if (autoTemplate.integers) {
@@ -147,7 +154,8 @@ export class DynamicSnippetService implements Disposable {
     }
 
     if (autoTemplate.repeatVars) {
-      const cleanedText = this.replaceTemplates(text, Object.keys(templates), "");
+      const sortedTemplates = Object.keys(templates).sort((a, b) => (/".*"/.test(a) ? -1 : 1));
+      const cleanedText = this.replaceTemplates(text, sortedTemplates, "");
       const minRepeat = typeof autoTemplate.repeatVars === "number" ? autoTemplate.repeatVars : 2;
       const vars = cleanedText.match(/(?<=\W|^)\w+(?=\W|$)/g) ?? [];
       const reserved: string[] = reservedWords;
@@ -160,26 +168,8 @@ export class DynamicSnippetService implements Disposable {
       templates = { ...templates, ...terms };
     }
 
-    if (queryForTemplates) {
-      const items: QuickPickItem[] = Object.entries(templates)
-        .sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]))
-        .map(([template, count]) => ({
-          label: template,
-          picked: queryTemplatesChecked,
-          kind: QuickPickItemKind.Default,
-          description: `Used ${count} times`,
-        }));
-      const picked = await window.showQuickPick(items, {
-        title: "Select templates to use",
-        canPickMany: true,
-        ignoreFocusOut: true,
-      });
-
-      if (picked) return picked.map((item) => item.label);
-      else return [];
-    }
-
-    return Object.keys(templates);
+    if (queryForTemplates) return editor.showTemplateSelectQuickPick(templates, queryTemplatesChecked);
+    else return Object.keys(templates).map((label) => ({ label }));
   }
 
   private filterRepeats(strings: string[], minRepeat: number, ignore?: string[]): Record<string, number> {

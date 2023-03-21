@@ -207,7 +207,7 @@
             "description": "Automatically convert to templates",
             "type": "object",
             "default": {
-              "integers": false,
+              "integers": true,
               "floats": false,
               "htmlColors": true,
               "repeatVars": 1,
@@ -217,7 +217,7 @@
             "properties": {
               "integers": {
                 "description": "Convert integers to templates",
-                "default": false,
+                "default": true,
                 "type": "boolean"
               },
               "floats": {
@@ -304,7 +304,7 @@
       },
       {
         "command": "snippet-clipboard.pasteSelectClipboardSnippet",
-        "key": "ctrl+meta+c alt+shift+v",
+        "key": "ctrl+meta+c ctrl+shift+v",
         "when": "editorTextFocus && !editorReadonly"
       },
       {
