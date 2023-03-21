@@ -19,6 +19,8 @@ export class DynamicSnippetService implements Disposable {
       const initialIndent = selection.start.character;
       const text = this.removeIndent(editor.document.getText(selection), initialIndent);
       const templates = await this.getTemplates(text);
+      if (!templates) continue;
+
       let snippet = new SnippetString(this.replaceTemplates(text, templates, templateOffset));
       if (this.config.alwaysEditTemplates) snippet = await this.services.editor.provideEditorEditedSnippet(snippet);
 
@@ -32,6 +34,8 @@ export class DynamicSnippetService implements Disposable {
   public async provideClipboardSnippet(): Promise<SnippetString[]> {
     const text = this.removeIndent(await env.clipboard.readText());
     const templates = await this.getTemplates(text);
+    if (!templates) return [];
+
     let snippet = new SnippetString(this.replaceTemplates(text, templates, 0));
     if (this.config.alwaysEditTemplates) snippet = await this.services.editor.provideEditorEditedSnippet(snippet);
 
@@ -113,16 +117,17 @@ export class DynamicSnippetService implements Disposable {
     let i = typeof replaceWithOrStart === "number" ? replaceWithOrStart : 1;
     for (const entry of templates) {
       const { label, template = undefined } = typeof entry === "object" && "label" in entry ? entry : { label: entry };
-      const escaped = escapeStringRegexp(label);
-      const regex = new RegExp(`(?:\\b|\\\\)${escaped}\\b`, "g");
-      const replace = replaceWith ?? (keepPlaceholders ? `\${${i++}:${template ?? label}}` : template ?? label);
+      const truncated = /^".*"$/.test(label) ? label.slice(1, -1) : label;
+      const escaped = escapeStringRegexp(truncated);
+      const regex = /^".*"$/.test(label) ? new RegExp(`(?<=["'])${escaped}(?=["'])`, "g") :  new RegExp(`(?:\\b|\\\\)${escaped}\\b`, "g");
+      const replace = replaceWith ?? (keepPlaceholders ? `\${${i++}:${template ?? truncated}}` : template ?? truncated);
       newText = newText.replace(regex, (match) => (match.startsWith("\\") ? `\\${replace}` : replace));
     }
 
     return newText;
   }
 
-  private async getTemplates(text: string): Promise<SnippetTemplate[]> {
+  private async getTemplates(text: string): Promise<SnippetTemplate[] | undefined> {
     const { autoTemplate, queryForTemplates, queryTemplatesChecked, reservedWords } = this.config;
     const { editor } = this.services;
     let templates: Record<string, number> = {};
@@ -149,7 +154,8 @@ export class DynamicSnippetService implements Disposable {
     }
 
     if (autoTemplate.repeatVars) {
-      const cleanedText = this.replaceTemplates(text, Object.keys(templates), "");
+      const sortedTemplates = Object.keys(templates).sort((a, b) => (/".*"/.test(a) ? -1 : 1));
+      const cleanedText = this.replaceTemplates(text, sortedTemplates, "");
       const minRepeat = typeof autoTemplate.repeatVars === "number" ? autoTemplate.repeatVars : 2;
       const vars = cleanedText.match(/(?<=\W|^)\w+(?=\W|$)/g) ?? [];
       const reserved: string[] = reservedWords;
