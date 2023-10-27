@@ -9,9 +9,10 @@ import {
   TabInputText,
   QuickPickItem,
   ThemeIcon,
+  languages,
 } from "vscode";
 import { ExtensionConfiguration } from "../providers/ConfigurationProvider";
-import { SnippetClipboardContentProvider } from "../providers/SnippetClipboardContentProvider";
+import { SnippetClipboardFileSystemProvider } from "../providers/SnippetClipboardFileSystemProvider";
 
 export interface SnippetTemplate {
   label: string;
@@ -23,39 +24,34 @@ export type Counter = "n" | "-n" | `n+${number}` | `${number}-n`;
 export class SnippetEditorService implements Disposable {
   public constructor(
     private config: ExtensionConfiguration,
-    private contentProvider: SnippetClipboardContentProvider
+    private fileSystemProvider: SnippetClipboardFileSystemProvider
   ) {}
 
   public dispose() {
     // Placeholder for future use
   }
 
-  public async provideEditorEditedSnippet(text: string | SnippetString): Promise<SnippetString> {
+  public async provideEditorEditedSnippet(text: string | SnippetString, languageId?: string): Promise<SnippetString> {
     let currentText = typeof text === "string" ? text : text.value;
-    const uri = this.contentProvider.registerSnippetDocument(currentText);
+    const uri = this.fileSystemProvider.registerSnippetDocument(currentText);
     const document = await workspace.openTextDocument(uri);
+    if (languageId) languages.setTextDocumentLanguage(document, languageId);
     await window.showTextDocument(document);
 
     const edited = await new Promise<SnippetString>((resolve, reject) => {
-      const disposables = [
-        this.contentProvider.onDidChange(async (uri) => {
-          if (uri.toString() === document.uri.toString())
-            currentText = (await this.contentProvider.provideTextDocumentContent(uri)) ?? currentText;
-        }),
-        window.tabGroups.onDidChangeTabs((tabs) => {
-          if (
-            tabs.closed.some(
-              ({ input }) => input instanceof TabInputText && input.uri.toString() === document.uri.toString()
-            )
-          ) {
-            disposables.forEach((d) => d.dispose());
-            resolve(new SnippetString(currentText));
+      window.tabGroups.onDidChangeTabs((tabs) => {
+        if (tabs.closed.some(({ input }) => input instanceof TabInputText && input.uri.toString() === uri.toString())) {
+          try {
+            const content = this.fileSystemProvider.readFile(uri).toString();
+            resolve(new SnippetString(content));
+          } catch (error) {
+            reject(error);
           }
-        }),
-      ];
+        }
+      });
     });
 
-    this.contentProvider.disposeDocument(uri);
+    this.fileSystemProvider.delete(uri);
     return edited;
   }
 

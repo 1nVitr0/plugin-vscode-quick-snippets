@@ -1,9 +1,8 @@
-import { window, workspace, WorkspaceEdit, Position, TextEditor, Selection } from 'vscode';
-import { SnippetEditorService } from '../../services/SnippetEditorService';
-import { ExtensionConfiguration } from '../../providers/ConfigurationProvider';
-import * as assert from 'assert';
-import { closeEditor, interceptEditorWithText } from '../tools/textEditor';
-import { SnippetClipboardContentProvider } from '../../providers/SnippetClipboardContentProvider';
+import * as assert from "assert";
+import { Selection, window, workspace } from "vscode";
+import { ExtensionConfiguration } from "../../providers/ConfigurationProvider";
+import { SnippetClipboardFileSystemProvider } from "../../providers/SnippetClipboardFileSystemProvider";
+import { SnippetEditorService } from "../../services/SnippetEditorService";
 
 suite("Unit Suite for SnippetEditorProvider", async () => {
   window.showInformationMessage("Start tests for SnippetEditorProvider.");
@@ -22,10 +21,10 @@ suite("Unit Suite for SnippetEditorProvider", async () => {
       integers: false,
       repeatStrings: false,
       repeatVars: false,
-    }
+    },
   };
-  const contentProvider = new SnippetClipboardContentProvider();
-  const editor = new SnippetEditorService(config, contentProvider);
+  const fileSystemProvider = new SnippetClipboardFileSystemProvider();
+  const editor = new SnippetEditorService(config, fileSystemProvider);
 
   // test("Opens editor", async () => {
   //   const text = "test";
@@ -89,11 +88,7 @@ suite("Unit Suite for SnippetEditorProvider", async () => {
     const textEditor = await window.showTextDocument(document);
 
     if (textEditor) {
-      textEditor.selections = [
-        new Selection(0, 5, 0, 9),
-        new Selection(0, 10, 0, 14),
-        new Selection(0, 15, 0, 24),
-      ];
+      textEditor.selections = [new Selection(0, 5, 0, 9), new Selection(0, 10, 0, 14), new Selection(0, 15, 0, 24)];
       config.keepPlaceholders = false;
       await textEditor.edit((edit) => editor.applySelectionTemplates(textEditor, edit));
     }
@@ -107,11 +102,7 @@ suite("Unit Suite for SnippetEditorProvider", async () => {
     const textEditor = await window.showTextDocument(document);
 
     if (textEditor) {
-      textEditor.selections = [
-        new Selection(0, 5, 0, 9),
-        new Selection(0, 10, 0, 14),
-        new Selection(0, 15, 0, 24),
-      ];
+      textEditor.selections = [new Selection(0, 5, 0, 9), new Selection(0, 10, 0, 14), new Selection(0, 15, 0, 24)];
       config.keepPlaceholders = true;
       await textEditor.edit((edit) => editor.applySelectionTemplates(textEditor, edit));
     }

@@ -6,9 +6,8 @@ import { pasteAsSnippet, pasteEditAsSnippet } from '../commands/pasteAsSnippet';
 import { pasteClipboardSnippet, pasteEditedSnippet, pasteSelectClipboardSnippet, pasteSelectEditedSnippet } from '../commands/pasteClipboardSnippet';
 import { SnippetServiceProvider } from '../providers/SnippetServiceProvider';
 import { resetClipboardIndex } from '../commands/resetClipboardIndex';
-import { SnippetClipboardContentProvider } from '../providers/SnippetClipboardContentProvider';
 
-export default function contributeCommands (services: SnippetServiceProvider, contentProvider: SnippetClipboardContentProvider) {
+export default function contributeCommands (services: SnippetServiceProvider) {
   return [
     commands.registerTextEditorCommand('snippet-clipboard.copyToSnippet', copyToSnippet.bind(null, services)),
     commands.registerTextEditorCommand('snippet-clipboard.copyEditToSnippet', copyEditToSnippet.bind(null, services)),
@@ -22,8 +21,8 @@ export default function contributeCommands (services: SnippetServiceProvider, co
     commands.registerTextEditorCommand('snippet-clipboard.editSelectSnippetClipboard', editSelectSnippetClipboard.bind(null, services)),
     commands.registerTextEditorCommand('snippet-clipboard.editClipboardAsSnippet', editClipboardAsSnippet.bind(null, services)),
     commands.registerTextEditorCommand('snippet-clipboard.clearSnippetClipboard', clearSnippetClipboard.bind(null, services)),
-    commands.registerTextEditorCommand('snippet-clipboard.applySelectionTemplates', applySelectionTemplates.bind(null, services, contentProvider)),
-    commands.registerTextEditorCommand('snippet-clipboard.applySelectionCounter', applySelectionCounter.bind(null, services, contentProvider)),
+    commands.registerTextEditorCommand('snippet-clipboard.applySelectionTemplates', applySelectionTemplates.bind(null, services)),
+    commands.registerTextEditorCommand('snippet-clipboard.applySelectionCounter', applySelectionCounter.bind(null, services)),
     commands.registerTextEditorCommand('snippet-clipboard.resetClipboardIndex', resetClipboardIndex.bind(null, services)),
   ];
 }

@@ -1,8 +1,8 @@
-import { SnippetClipboardContentProvider } from '../providers/SnippetClipboardContentProvider';
-import { Disposable, workspace } from 'vscode';
+import { Disposable, workspace } from "vscode";
+import { SnippetClipboardFileSystemProvider } from "../providers/SnippetClipboardFileSystemProvider";
 
-export function contributeProviders (contentProvider: SnippetClipboardContentProvider): Disposable[] {
+export function contributeProviders(fileSystemProvider: SnippetClipboardFileSystemProvider): Disposable[] {
   return [
-    workspace.registerTextDocumentContentProvider(contentProvider.scheme, contentProvider),
+    workspace.registerFileSystemProvider(fileSystemProvider.scheme, fileSystemProvider, { isCaseSensitive: true }),
   ];
 }
