@@ -1,3 +1,10 @@
+# [1.4.0](https://github.com/1nVitr0/plugin-vscode-snippet-clipboard/compare/v1.3.1...v1.4.0) (2023-10-30)
+
+
+### Features
+
+* add support for undo in snippet edit ([98a1a19](https://github.com/1nVitr0/plugin-vscode-snippet-clipboard/commit/98a1a199f04b725c01ba711d0542d1a0d926cde0))
+
 ## [1.3.1](https://github.com/1nVitr0/plugin-vscode-snippet-clipboard/compare/v1.3.0...v1.3.1) (2023-03-21)
 
 
