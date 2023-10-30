@@ -189,44 +189,8 @@ export class DynamicSnippetService implements Disposable {
     minRepeat: number,
     ignore?: Record<string, number>
   ): Record<string, number> {
-    const wordRegex = /\b\w+\b/g;
-
-    let templates: Record<string, number> = {};
-    let words: RegExpExecArray[] = [];
-    let match: RegExpExecArray | null;
-    let skipTemplates = true;
-    while ((match = wordRegex.exec(text))) words.push(match);
-
-    while (words.length) {
-      const strings = words.map((word) => word[0]);
-      const repeatStrings = this.filterRepeats(strings, minRepeat);
-      const repeatStringTexts = Object.keys(repeatStrings);
-      words = words.filter((word) => repeatStringTexts.includes(word[0]));
-
-      if (!skipTemplates || (skipTemplates = false)) templates = { ...templates, ...repeatStrings };
-
-      words = words
-        .map((word) => {
-          const { index, [0]: original } = word;
-          let result = original;
-          let stopAtWordBreak = false;
-          for (let i = index + original.length; true; i++) {
-            const nextChar = text[i];
-            if (nextChar === " " || nextChar === "\t" || nextChar === "-") {
-              if (stopAtWordBreak) break;
-              else result += nextChar;
-              stopAtWordBreak = true;
-            } else if (/\w/.test(nextChar)) {
-              result += nextChar;
-            } else {
-              break;
-            }
-          }
-
-          return result.trim() !== original ? { ...word, [0]: result } : null;
-        })
-        .filter((word) => !!word) as RegExpExecArray[];
-    }
+    const words = [...text.matchAll(/\b\w+\b/g)].map((word) => word[0]);
+    const templates = this.filterRepeats(words, minRepeat);
 
     if (ignore) {
       // Remove any templates that were already found
